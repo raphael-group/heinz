@@ -53,7 +53,8 @@ public:
             int timeLimit,
             int multiThreading,
             int memoryLimit,
-            bool pcst)
+            bool pcst,
+            int moduleSize)
       : _backOff(backOff)
       , _analysis(analysis)
       , _maxNumberOfCuts(maxNumberOfCuts)
@@ -61,6 +62,7 @@ public:
       , _multiThreading(multiThreading)
       , _memoryLimit(memoryLimit)
       , _pcst(pcst)
+      , _moduleSize(moduleSize)
     {
     }
     
@@ -71,6 +73,7 @@ public:
     int _multiThreading;
     int _memoryLimit;
     bool _pcst;
+    int _moduleSize;
   };
 
 protected:
@@ -234,13 +237,20 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
   const WeightNodeMap& weight = mwcsGraph.getScores();
 
   IloExpr expr(_env);
+  IloExpr sum(_env);
   
   // objective function
   for (int i = 0; i < _n ; i++)
   {
     expr += _x[i] * weight[_invNode[i]];
+    sum += _x[i];
   }
   _model.add(IloObjective(_env, expr, IloObjective::Maximize));
+  
+  if (_options._moduleSize != -1)
+  {
+    _model.add(sum == _options._moduleSize);
+  }
 
   // add equality constraints
   if (_pAnalysis)
