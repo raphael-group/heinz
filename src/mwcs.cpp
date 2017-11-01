@@ -259,7 +259,14 @@ int main(int argc, char** argv)
     if (outputFile != "-" && !outputFile.empty())
     {
       std::ofstream outFile(outputFile.c_str());
-      pMwcs->printHeinz(pSolver->getSolutionModule(), outFile);
+      if (pPreprocessedMwcs)
+      {
+        pMwcs->printHeinz(pSolver->getSolutionModule(), outFile);
+      }
+      else
+      {
+        pMwcs->printHeinzOrg(pSolver->getSolutionModule(), outFile);
+      }
       pMwcs->printModule(pSolver->getSolutionModule(), std::cout, false);
     }
     else if (outputFile == "-")
