@@ -249,7 +249,7 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
     expr += _x[i] * weight[_invNode[i]];
     sum += _x[i];
 
-    if (i > 0 && i <= _options._numComponents)
+    if (i > 0 && i <= (_n - 1)/2)
     {
       sumAux += _x[i];
     }
