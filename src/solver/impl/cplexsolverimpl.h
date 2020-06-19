@@ -249,7 +249,10 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
     expr += _x[i] * weight[_invNode[i]];
     sum += _x[i];
 
-    if (i > 0 && i <= (_n - 1)/2)
+    // attempt at parsing which nodes are auxiliary edge nodes
+    char name = _x[i].getName();
+
+    if (name[3] == "E" && name[4] == "_")
     {
       sumAux += _x[i];
     }
