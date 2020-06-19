@@ -89,3 +89,5 @@ To run heinz on the DIMACS MWCS instances, do:
 For the PCST DIMACS instances use:
 
     ./heinz -stp-pcst ../data/DIMACS/pcst/PCSPG-JMP/K100.2.stp
+
+test
