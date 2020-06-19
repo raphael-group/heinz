@@ -84,6 +84,7 @@ int main(int argc, char** argv)
   int backOffFunction = 1;
   int backOffPeriod = 1;
   int moduleSize = -1;
+  int numComponents = -1;
   std::string root;
   std::string outputFile;
   double lambda = 0;
@@ -103,6 +104,7 @@ int main(int argc, char** argv)
   .refOption("e", "Edge list file", edgeFile, false)
   .refOption("n", "Node file", nodeFile, false)
   .refOption("k", "Module size (default: -1)", moduleSize, false)
+  .refOption("c", "Number of components (default: -1)", numComponents, false)
   .refOption("period", "Back-off period (default: 1)", backOffPeriod, false)
   .refOption("b", "Back-off function:\n"
              "     0 - Constant waiting (period: 1, override with '-period')\n"
@@ -183,7 +185,7 @@ int main(int argc, char** argv)
   // Parse the input graph file and preprocess
   MwcsGraphType* pMwcs;
   MwcsPreprocessedGraphType* pPreprocessedMwcs = NULL;
-  if (!noPreprocess && moduleSize == -1)
+  if (!noPreprocess && moduleSize == -1 && numComponents == -1)
   {
     pMwcs = pPreprocessedMwcs = new MwcsPreprocessedGraphType();
   }
@@ -227,7 +229,8 @@ int main(int argc, char** argv)
                     multiThreading,
                     memoryLimit,
                     !stpPcstFile.empty(),
-                    moduleSize);
+                    moduleSize,
+                    numComponents);
     
     if (rootNodeSet.size() == 0 && !root.empty())
     {
@@ -241,7 +244,7 @@ int main(int argc, char** argv)
       pSolverRooted->solve(*pMwcs, rootNodeSet);
       pSolver = pSolverRooted;
     }
-    else if (noEnum || moduleSize != -1)
+    else if (noEnum || moduleSize != -1 || numComponents != -1)
     {
       SolverUnrootedType* pSolverUnrooted = new SolverUnrootedType(new CutSolverUnrootedImplType(options));
       pSolverUnrooted->solve(*pMwcs);

@@ -54,7 +54,8 @@ public:
             int multiThreading,
             int memoryLimit,
             bool pcst,
-            int moduleSize)
+            int moduleSize,
+            int numComponents)
       : _backOff(backOff)
       , _analysis(analysis)
       , _maxNumberOfCuts(maxNumberOfCuts)
@@ -63,6 +64,7 @@ public:
       , _memoryLimit(memoryLimit)
       , _pcst(pcst)
       , _moduleSize(moduleSize)
+      , _numComponents(numComponents)
     {
     }
     
@@ -74,6 +76,7 @@ public:
     int _memoryLimit;
     bool _pcst;
     int _moduleSize;
+    int _numComponents;
   };
 
 protected:
@@ -238,18 +241,32 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
 
   IloExpr expr(_env);
   IloExpr sum(_env);
+  IloExpr sumAux(_env);
   
   // objective function
   for (int i = 0; i < _n ; i++)
   {
     expr += _x[i] * weight[_invNode[i]];
     sum += _x[i];
+
+    if (i > 0 && i <= _options._numComponents)
+    {
+      sumAux += _x[i];
+    }
+
   }
   _model.add(IloObjective(_env, expr, IloObjective::Maximize));
   
+  // restrict module size
   if (_options._moduleSize != -1)
   {
     _model.add(sum == _options._moduleSize);
+  }
+
+  // restrict number of components
+  if (_options._numComponents != -1)
+  {
+    _model.add(sumAux <= _options._numComponents);
   }
 
   // add equality constraints
