@@ -242,7 +242,7 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
   IloExpr expr(_env);
   IloExpr sum(_env);
   IloExpr sumAux(_env);
-  
+
   // objective function
   for (int i = 0; i < _n ; i++)
   {
@@ -250,16 +250,16 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
     sum += _x[i];
 
     // attempt at parsing which nodes are auxiliary edge nodes
-    char name = _x[i].getName();
+    const char *name = _x[i].getName();
 
-    if (name[3] == "E" && name[4] == "_")
+    if (name[3] == 'E' && name[4] == '_')
     {
       sumAux += _x[i];
     }
 
   }
   _model.add(IloObjective(_env, expr, IloObjective::Maximize));
-  
+
   // restrict module size
   if (_options._moduleSize != -1)
   {
