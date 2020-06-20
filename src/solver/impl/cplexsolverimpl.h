@@ -252,7 +252,7 @@ inline void CplexSolverImpl<GR, NWGHT, NLBL, EWGHT>::initConstraints(const MwcsG
     // attempt at parsing which nodes are auxiliary edge nodes
     const char *name = _x[i].getName();
 
-    if (name[3] == 'E' && name[4] == '_')
+    if (name[2] == 'E' && name[3] == '_')
     {
       sumAux += _x[i];
     }
